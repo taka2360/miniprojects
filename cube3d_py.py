@@ -2,8 +2,10 @@ import time
 import math
 import os
 import numpy as np
+from multiprocessing import Process
 
-A = -10
+
+A = 0
 B = 0
 C = 0
 
@@ -18,21 +20,20 @@ horizontalOffset = 0
 K1 = 40
 incrementSpeed = 0.6
 
-
-def calculateX(i:int, j:int, k:int):
+def calculateX(i:int, j:int, k:int) -> float:
   return j * math.sin(A) * math.sin(B) * math.cos(C) - k * math.cos(A) * math.sin(B) * math.cos(C) + j * math.cos(A) * math.sin(C) + k * math.sin(A) * math.sin(C) + i * math.cos(B) * math.cos(C)
 
 
-def calculateY(i:int, j:int, k:int) :
+def calculateY(i:int, j:int, k:int) -> float:
   return j * math.cos(A) * math.cos(C) + k * math.sin(A) * math.cos(C) - j * math.sin(A) * math.sin(B) * math.sin(C) + k * math.cos(A) * math.sin(B) * math.sin(C) - i * math.cos(B) * math.sin(C)
 
 
-def calculateZ(i:int, j:int, k:int):
+def calculateZ(i:int, j:int, k:int) -> float:
   return k * math.cos(A) * math.cos(B) - j * math.sin(A) * math.cos(B) + i * math.sin(B)
 
 
 def calculateForSurface(cubeX:float, cubeY:float, cubeZ:float, ch:int):
-  x = calculateX(cubeX, cubeY, cubeZ)
+  x = calculateY(cubeX, cubeY, cubeZ)
   y = calculateY(cubeX, cubeY, cubeZ)
   z = calculateZ(cubeX, cubeY, cubeZ) + distanceFromCam
 
@@ -47,15 +48,17 @@ def calculateForSurface(cubeX:float, cubeY:float, cubeZ:float, ch:int):
       zBuffer[idx] = ooz
       buffer[idx] = ch
 
+
 def main() :
   global horizontalOffset, A, B, C, buffer, zBuffer
-  
 
   os.system("cls")
   
   while (1) :
+    
     cubeWidth = 10
     #horizontalOffset = -2 * cubeWidth
+    horizontalOffset = 0
     buffer = [backgroundASCIICode for _ in range(width * height)]
     zBuffer = [0 for _ in range(width * height * 4)]
     # first cube
@@ -104,11 +107,12 @@ def main() :
     print(display_text)
   
     
-    """
+    
     A += 0.05
     B += 0.05
-    C += 0.01"""
+    C += 0.01
     time.sleep(1/60)
   
 if __name__ == "__main__":
   main()
+
